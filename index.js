@@ -65,15 +65,15 @@ async function postMenuToWapl(page, menu) {
     const date = new Date().getDate();
     input.innerHTML = `<div>🤖올라술고기 메뉴 봇 - ${month}월 ${date}일 점심 메뉴</div><div>${menu}</div>`;
   }, menu);
-  await page.waitForSelector('button[class="sc-kQwWFH dGAtdu"]');
-  await page.click('button[class="sc-kQwWFH dGAtdu"]');
-  await (() => new Promise((res) => setTimeout(res, 1000)))();
+  await page.waitForSelector("button.sc-kQwWFH");
+  await page.click("button.sc-kQwWFH");
+  await (() => new Promise((res) => setTimeout(res, 3000)))();
 }
 
 async function writeText(menu) {
   const browser = await puppeteer.launch(browserConfig);
   const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 1080 });
+  await page.setViewport({ width: 1280, height: 3080 });
 
   try {
     await loginToWapl(page);
