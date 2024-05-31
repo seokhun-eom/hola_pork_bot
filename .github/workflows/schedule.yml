@@ -1,0 +1,36 @@
+name: Run index.js on schedule
+
+on:
+  schedule:
+    - cron: "50 1 * * 1-5" # 매일 평일 10:50 KST
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies using pnpm
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Set environment variables
+        run: |
+          echo "WAPL_USERNAME=${{ secrets.WAPL_USERNAME }}" >> $GITHUB_ENV
+          echo "WAPL_PASSWORD=${{ secrets.WAPL_PASSWORD }}" >> $GITHUB_ENV
+          echo "WAPL_ROOM_DEV=${{ secrets.WAPL_ROOM_DEV }}" >> $GITHUB_ENV
+          echo "WAPL_ROOM_PROD=${{ secrets.WAPL_ROOM_PROD }}" >> $GITHUB_ENV
+
+      - name: Run index.js
+        run: pnpm start
+        env:
+          NODE_ENV: production
