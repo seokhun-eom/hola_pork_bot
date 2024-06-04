@@ -1,7 +1,8 @@
 import puppeteer from "puppeteer";
+import cron from "node-cron";
 import "dotenv/config";
 
-const isDevMode = process.env.NODE_ENV === "development";
+const isDevMode = process.env.NODE_ENV !== "production";
 const browserConfig = {
   headless: !isDevMode,
 };
@@ -114,4 +115,10 @@ async function main() {
   }
 }
 
-await main();
+// await main();
+
+cron.schedule("50 10 * * 1-5", async () => {
+  console.log("crawling start");
+  await main();
+  console.log("crawling end");
+});
