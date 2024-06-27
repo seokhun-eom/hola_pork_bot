@@ -18,7 +18,7 @@ async function getRecentPostLink(page) {
 }
 
 async function extractTextFromPost(page) {
-  await page.waitForSelector("._a9zs");
+  await page.waitForSelector(".x193iq5w");
   return await page.evaluate(() => {
     const elements = Array.from(document.querySelectorAll("*"));
     const targetElement = elements.find((el) =>
@@ -34,6 +34,7 @@ async function getText() {
   await page.setViewport({ width: 1280, height: 1080 });
 
   try {
+    await loginToInstagram(page);
     const recentPostLink = await getRecentPostLink(page);
     await page.goto(recentPostLink, { waitUntil: "networkidle2" });
     const text = await extractTextFromPost(page);
@@ -41,6 +42,15 @@ async function getText() {
   } finally {
     await browser.close();
   }
+}
+
+async function loginToInstagram(page) {
+  await page.goto("https://www.instagram.com/", { waitUntil: "networkidle2" });
+  await page.waitForSelector('input[name="username"]');
+  await page.type('input[name="username"]', process.env.INSTA_USERNAME);
+  await page.type('input[name="password"]', process.env.INSTA_PASSWORD);
+  await page.click('button[type="submit"]');
+  await page.waitForNavigation();
 }
 
 async function loginToWapl(page) {
@@ -117,7 +127,7 @@ async function main() {
 
 // await main();
 
-cron.schedule("50 10 * * 1-5", async () => {
+cron.schedule("00 11 * * 1-5", async () => {
   console.log("crawling start");
   await main();
   console.log("crawling end");
